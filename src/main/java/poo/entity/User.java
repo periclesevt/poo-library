@@ -1,4 +1,4 @@
-package poo;
+package poo.entity;
 
 public class User extends Person {
 
