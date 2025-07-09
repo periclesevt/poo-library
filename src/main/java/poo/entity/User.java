@@ -1,7 +1,7 @@
 package poo.entity;
 
 import poo.system.Borrow;
-import poo.system.Penalty;
+// import poo.system.Penalty; // This import is not directly used in User class, remove it.
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class User extends Person {
     }
 
     private UserType userType;
-    private List<Borrow> borrowHistory; // List of all past and current borrows
+    private final List<Borrow> borrowHistory; // Made final as its reference doesn't change
     private boolean isBlocked; // True if the user has pending penalties
 
     // Constructor
@@ -63,7 +63,7 @@ public class User extends Person {
         this.userType = userType;
     }
 
-    // Getter for Borrow History
+    // Getter for Borrow History (still good to have for external use)
     public List<Borrow> getBorrowHistory() {
         return borrowHistory;
     }
@@ -90,23 +90,18 @@ public class User extends Person {
 
     @Override
     public double calculateDiscount() {
-        // Example: Students get a 10% discount on something (e.g., membership fees, if applicable)
-        // For a library system, discounts might not apply directly to items or borrows.
-        // This is primarily for demonstrating polymorphism as per project requirements.
-        switch (userType) {
-            case STUDENT:
-                return 0.10; // 10% discount
-            case PROFESSOR:
-                return 0.05; // 5% discount
-            case EMPLOYEE:
-                return 0.00; // No discount
-            default:
-                return 0.00;
-        }
+        // Refactored to enhanced 'switch' statement (Java 14+) for conciseness
+        return switch (userType) {
+            case STUDENT -> 0.10; // 10% discount
+            case PROFESSOR -> 0.05; // 5% discount
+            case EMPLOYEE -> 0.00; // No discount
+            default -> 0.00; // Should not happen if enum is exhaustive
+        };
     }
 
     @Override
     public double calculatePenalty(Borrow borrow) {
+        // Penalty calculation logic remains the same
         if (borrow == null || borrow.getReturnDate() == null || borrow.getReturnDate().isBefore(borrow.getDueDate())) {
             return 0.0; // No penalty if no borrow, not yet returned, or returned on time
         }

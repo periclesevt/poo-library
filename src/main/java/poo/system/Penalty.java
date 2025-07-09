@@ -3,9 +3,9 @@ package poo.system;
 import java.util.UUID; // For generating unique IDs
 
 public class Penalty {
-    private String penaltyId;
-    private Borrow borrow; // Reference to the borrow that incurred this penalty
-    private double amount;
+    private final String penaltyId; // Made final as it's set once in constructor
+    private final Borrow borrow;    // Made final as it's set once in constructor
+    private final double amount;    // Made final as it's set once in constructor
     private boolean isPaid;
 
     // Constructor
@@ -36,11 +36,11 @@ public class Penalty {
         return amount;
     }
 
-    public boolean isPaid() {
+    public boolean isPaid() { // This getter is fine, even if not used internally
         return isPaid;
     }
 
-    // Setters (with validation where appropriate)
+    // Setter for isPaid (with validation where appropriate)
     public void setPaid(boolean paid) {
         isPaid = paid;
     }

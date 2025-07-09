@@ -2,24 +2,45 @@ package poo.item;
 
 import java.time.LocalDate;
 
-public class LibraryItem {
+// A classe é abstrata, como planejado.
+public abstract class LibraryItem {
 
-    private String title;
-    private String author; // Can also represent director for DVD, or editor for Magazine
-    private int publicationYear;
-    private boolean available; // Indicates if the item is currently available for borrowing
-    private int borrowCount; // To track how many times the item has been borrowed for reports
+    // Campos final, definidos apenas no construtor
+    private final String title;
+    private final String author;
+    private final int publicationYear;
+    // Campos mutáveis, pois seus valores mudam ao longo do tempo
+    private boolean available;
+    private int borrowCount;
 
-    // Constructor
+    // Construtor: Responsável por inicializar os campos finais e os mutáveis.
+    // As validações para os campos finais são feitas diretamente aqui.
     public LibraryItem(String title, String author, int publicationYear) {
-        setTitle(title);
-        setAuthor(author);
-        setPublicationYear(publicationYear);
-        this.available = true; // New items are available by default
-        this.borrowCount = 0; // Initialize borrow count
+        // Validação e atribuição para 'title'
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
+        this.title = title; // Atribuição direta ao campo final
+
+        // Validação e atribuição para 'author'
+        if (author == null || author.trim().isEmpty()) {
+            throw new IllegalArgumentException("Author/Director/Editor cannot be null or empty.");
+        }
+        this.author = author; // Atribuição direta ao campo final
+
+        // Validação e atribuição para 'publicationYear'
+        // Validação básica: ano de publicação não deve ser no futuro ou zero/negativo
+        if (publicationYear <= 0 || publicationYear > LocalDate.now().getYear()) {
+            throw new IllegalArgumentException("Publication year is invalid.");
+        }
+        this.publicationYear = publicationYear; // Atribuição direta ao campo final
+
+        // Inicialização de campos mutáveis
+        this.available = true; // Novos itens estão disponíveis por padrão
+        this.borrowCount = 0;  // Contagem de empréstimos inicia em zero
     }
 
-    // Getters
+    // Getters para todos os campos
     public String getTitle() {
         return title;
     }
@@ -40,39 +61,17 @@ public class LibraryItem {
         return borrowCount;
     }
 
-    // Setters with basic validation (Encapsulation)
-    public void setTitle(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty.");
-        }
-        this.title = title;
-    }
-
-    public void setAuthor(String author) {
-        if (author == null || author.trim().isEmpty()) {
-            throw new IllegalArgumentException("Author/Director/Editor cannot be null or empty.");
-        }
-        this.author = author;
-    }
-
-    public void setPublicationYear(int publicationYear) {
-        // Basic validation: publication year should not be in the future
-        if (publicationYear <= 0 || publicationYear > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("Publication year is invalid.");
-        }
-        this.publicationYear = publicationYear;
-    }
-
+    // Setter apenas para 'available', pois é um campo mutável
     public void setAvailable(boolean available) {
         this.available = available;
     }
 
-    // Method to increment borrow count
+    // Método para incrementar a contagem de empréstimos (protected para uso por subclasses)
     protected void incrementBorrowCount() {
         this.borrowCount++;
     }
 
-    // Overriding toString() method (Polymorphism)
+    // Sobrescrita do método toString() para uma representação legível do objeto
     @Override
     public String toString() {
         return "LibraryItem{" +
