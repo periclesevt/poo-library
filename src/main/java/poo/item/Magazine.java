@@ -10,60 +10,50 @@ public class Magazine extends  LibraryItem implements Borrowable {
 
     // Constructors
     public Magazine(String title, String editor, int publicationYear, String issn, int editionNumber) {
-        super(title, editor, publicationYear); // Using author field for editor
-        setISSN(issn); // Use setter for validation
-        setEditionNumber(editionNumber); // Use setter for validation
+        super(title, editor, publicationYear); // Usando campo do Autor para Editor
+        setISSN(issn);
+        setEditionNumber(editionNumber);
     }
 
-    // Overloaded constructor (example for polymorphism)
     public Magazine(String title, String editor, String issn, int editionNumber) {
-        this(title, editor, LocalDate.now().getYear(), issn, editionNumber); // Default year to current
+        this(title, editor, LocalDate.now().getYear(), issn, editionNumber); // Ano atual por padrão
     }
 
-    // Getter for ISSN
     public String getISSN() {
         return issn;
     }
 
-    // Setter for ISSN with validation (Encapsulation)
     public void setISSN(String issn) {
         if (issn == null || issn.trim().isEmpty()) {
-            throw new IllegalArgumentException("ISSN cannot be null or empty.");
+            throw new IllegalArgumentException("ISSN não pode ser nulo ou vazio");
         }
-        // Basic ISSN format validation (e.g., 8 digits, optional hyphen)
-        if (!issn.matches("^\\d{4}-\\d{3}[\\dX]$")) { // Example: XXXX-XXXX or XXXX-XXXD, where D is a digit
-            System.err.println("Warning: The ISSN format '" + issn + "' might be invalid. Example: 1234-5678");
-            // You might choose to throw an IllegalArgumentException here instead of just printing
-            // throw new IllegalArgumentException("Invalid ISSN format.");
+        // formato basico ISSN
+        if (!issn.matches("^\\d{4}-\\d{3}[\\dX]$")) { // Exemplo: XXXX-XXXX ou XXXX-XXXD, onde D é um digito
+            System.err.println("AVISO: o ISSN formato '" + issn + "' parece ser inválido. Exemplo: 1234-5678");
         }
         this.issn = issn;
     }
 
-    // Getter for Edition Number
     public int getEditionNumber() {
         return editionNumber;
     }
 
-    // Setter for Edition Number with validation (Encapsulation)
     public void setEditionNumber(int editionNumber) {
         if (editionNumber <= 0) {
-            throw new IllegalArgumentException("Edition number must be a positive integer.");
+            throw new IllegalArgumentException("Número de edição deve ser um inteiro positivo.");
         }
         this.editionNumber = editionNumber;
     }
 
-    // Implementation of Borrowable interface methods
     @Override
     public boolean borrowItem(User user) {
         if (isAvailable()) {
-            // Here, you'd ideally also check user's loan limit and if they are blocked
-            // This method in Magazine only handles its own availability status
             setAvailable(false);
-            incrementBorrowCount(); // Increment the loan counter inherited from LibraryItem
-            System.out.println("Magazine '" + getTitle() + "' successfully borrowed by " + user.getName() + ".");
+            incrementBorrowCount();
+            System.out.println("Revista '" + getTitle() + "' alugada com sucesso por " + user.getName() + ".");
             return true;
         } else {
-            System.out.println("Magazine '" + getTitle() + "' is not available for borrowing.");
+            System.out.println("Revista '" + getTitle() + "' não está válida para empréstimo.");
             return false;
         }
     }
@@ -72,26 +62,25 @@ public class Magazine extends  LibraryItem implements Borrowable {
     public boolean returnItem() {
         if (!isAvailable()) {
             setAvailable(true);
-            System.out.println("Magazine '" + getTitle() + "' successfully returned.");
+            System.out.println("Revista '" + getTitle() + "' devolvida com sucesso.");
             return true;
         } else {
-            System.out.println("Magazine '" + getTitle() + "' is already available (was not borrowed).");
+            System.out.println("Revista '" + getTitle() + "' já está disponível (foi devolvida). ");
             return false;
         }
     }
 
     @Override
     public int getBorrowPeriodDays() {
-        // Default loan period for a magazine (e.g., 7 days)
+        // Tempo padrão para devolução revista.
         return 7;
     }
 
-    // Overriding toString() method (Polymorphism)
     @Override
     public String toString() {
         return "Magazine{" +
                 "title='" + getTitle() + '\'' +
-                ", editor='" + getAuthor() + '\'' + // Using getAuthor() as editor
+                ", editor='" + getAuthor() + '\'' +
                 ", publicationYear=" + getPublicationYear() +
                 ", issn='" + issn + '\'' +
                 ", editionNumber=" + editionNumber +

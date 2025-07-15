@@ -1,7 +1,6 @@
-// poo/view/LibraryGUI.java
 package poo.view;
 
-import poo.system.Library; // Importa a classe principal de lógica de negócio
+import poo.system.Library;
 import javax.swing.*;
 import java.awt.*;
 

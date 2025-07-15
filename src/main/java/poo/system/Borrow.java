@@ -8,33 +8,31 @@ import java.time.LocalDate;
 import java.util.UUID; // For generating unique IDs
 
 public class Borrow {
-    private final String borrowId; // Made final as it's set once in constructor
-    private final User user;       // Made final as it's set once in constructor
-    private final LibraryItem item; // Made final as it's set once in constructor
-    private final LocalDate borrowDate; // Made final as it's set once in constructor
+    private final String borrowId;
+    private final User user;
+    private final LibraryItem item;
+    private final LocalDate borrowDate;
     private LocalDate dueDate;
-    private LocalDate returnDate; // Null if not yet returned
-    private boolean isRenewed; // To track if the borrow has been renewed
+    private LocalDate returnDate; // Nulo se não devolvido
+    private boolean isRenewed; // Restrear se o empréstimo foi renovado
 
-    // Constructor
     public Borrow(User user, LibraryItem item, LocalDate borrowDate, LocalDate dueDate) {
         if (user == null || item == null || borrowDate == null || dueDate == null) {
-            throw new IllegalArgumentException("Borrow constructor parameters cannot be null.");
+            throw new IllegalArgumentException("Parâmetros do empréstimo não podem ser nulos.");
         }
         if (borrowDate.isAfter(dueDate)) {
-            throw new IllegalArgumentException("Borrow date cannot be after due date.");
+            throw new IllegalArgumentException("A data do empréstimo não pode ser posterior a data de vencimento.");
         }
 
-        this.borrowId = UUID.randomUUID().toString(); // Generate a unique ID for each borrow
+        this.borrowId = UUID.randomUUID().toString(); // Gera ID único para cada empréstimo.
         this.user = user;
         this.item = item;
         this.borrowDate = borrowDate;
         this.dueDate = dueDate;
-        this.returnDate = null; // Initially not returned
-        this.isRenewed = false; // Not renewed by default
+        this.returnDate = null; // Não retornado
+        this.isRenewed = false; // Não renovado por padrão
     }
 
-    // Getters
     public String getBorrowId() {
         return borrowId;
     }
@@ -63,20 +61,18 @@ public class Borrow {
         return isRenewed;
     }
 
-    // Setters (with validation where appropriate)
     public void setDueDate(LocalDate dueDate) {
         if (dueDate == null) {
-            throw new IllegalArgumentException("Due date cannot be null.");
+            throw new IllegalArgumentException("Data de vencimento não pode ser nula.");
         }
-        // Ensure new due date is not before the original borrow date
+        // Garante que a nova data de vencimento não é anterior a data de empréstimo.
         if (dueDate.isBefore(this.borrowDate)) {
-            throw new IllegalArgumentException("Due date cannot be before borrow date.");
+            throw new IllegalArgumentException("Data de vencimento não pode ser anterior a data de empréstimo.");
         }
         this.dueDate = dueDate;
     }
 
     public void setReturnDate(LocalDate returnDate) {
-        // returnDate can be null if not yet returned, so no null check for null assignment
         this.returnDate = returnDate;
     }
 
@@ -84,24 +80,21 @@ public class Borrow {
         isRenewed = renewed;
     }
 
-    // Overriding toString() method
     @Override
     public String toString() {
-        // Safely determine item ID display based on type
         String itemIdDisplay;
         if (item instanceof Book) {
             itemIdDisplay = "ISBN: " + ((Book) item).getISBN();
         } else if (item instanceof Magazine) {
             itemIdDisplay = "ISSN: " + ((Magazine) item).getISSN();
         } else {
-            // For DVD or generic LibraryItem, use a combination of title, author, year
             itemIdDisplay = "ID: " + item.getTitle() + "-" + item.getAuthor() + "-" + item.getPublicationYear();
         }
 
         return "Borrow{" +
                 "borrowId='" + borrowId + '\'' +
                 ", user=" + user.getName() + " (CPF: " + user.getCPF() + ')' +
-                ", item=" + item.getTitle() + " (" + itemIdDisplay + ')' + // Updated item ID display
+                ", item=" + item.getTitle() + " (" + itemIdDisplay + ')' + // Atualiza ID do item
                 ", borrowDate=" + borrowDate +
                 ", dueDate=" + dueDate +
                 ", returnDate=" + (returnDate != null ? returnDate : "N/A") +

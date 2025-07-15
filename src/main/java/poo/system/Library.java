@@ -30,16 +30,16 @@ public class Library {
 
     public boolean addItem(LibraryItem item) {
         if (item == null) {
-            System.err.println("Cannot add a null item.");
+            System.err.println("Não pode adicionar um item nulo.");
             return false;
         }
         String itemId = getItemIdentifier(item);
         if (libraryItems.containsKey(itemId)) {
-            System.err.println("Item with ID " + itemId + " already exists.");
+            System.err.println("Item com ID " + itemId + " já existente.");
             return false;
         }
         libraryItems.put(itemId, item);
-        System.out.println("Item '" + item.getTitle() + "' added successfully.");
+        System.out.println("Item '" + item.getTitle() + "' adicionado com sucesso.");
         return true;
     }
 
@@ -49,27 +49,27 @@ public class Library {
 
     public boolean updateItem(String oldItemId, LibraryItem updatedItem) {
         if (oldItemId == null || oldItemId.trim().isEmpty()) {
-            System.err.println("Old item ID cannot be null or empty for update.");
+            System.err.println("Antigo ID do item não pode ser nulo ou vazio para atualização");
             return false;
         }
         if (updatedItem == null) {
-            System.err.println("Updated item cannot be null.");
+            System.err.println("Item atualizado não pode ser nulo.");
             return false;
         }
 
         if (!libraryItems.containsKey(oldItemId)) {
-            System.err.println("Item with ID " + oldItemId + " not found for update.");
+            System.err.println("Item com ID " + oldItemId + " não encontrado para atualização.");
             return false;
         }
 
         String updatedItemId = getItemIdentifier(updatedItem);
         if (!oldItemId.equals(updatedItemId)) {
-            System.err.println("Update failed: New item ID (" + updatedItemId + ") does not match old item ID (" + oldItemId + ").");
+            System.err.println("Atualização falhou: novo ID (" + updatedItemId + ") não bate com o ID anterior (" + oldItemId + ").");
             return false;
         }
 
         libraryItems.put(oldItemId, updatedItem);
-        System.out.println("Item with ID " + oldItemId + " updated successfully to '" + updatedItem.getTitle() + "'.");
+        System.out.println("Item com ID " + oldItemId + " atualizado com sucesso para '" + updatedItem.getTitle() + "'.");
         return true;
     }
 
@@ -80,8 +80,8 @@ public class Library {
     public List<LibraryItem> listItemsByCategory(String category) {
         return libraryItems.values().stream()
                 .filter(item -> {
-                    if ("Book".equalsIgnoreCase(category)) return item instanceof Book;
-                    if ("Magazine".equalsIgnoreCase(category)) return item instanceof Magazine;
+                    if ("Livro".equalsIgnoreCase(category)) return item instanceof Book;
+                    if ("Revista".equalsIgnoreCase(category)) return item instanceof Magazine;
                     if ("Dvd".equalsIgnoreCase(category)) return item instanceof Dvd;
                     return true;
                 })
@@ -101,15 +101,15 @@ public class Library {
 
     public boolean registerUser(User user) {
         if (user == null) {
-            System.err.println("Cannot register a null user.");
+            System.err.println("Não pode registrar um Usuário nulo.");
             return false;
         }
         if (users.containsKey(user.getCPF())) {
-            System.err.println("User with CPF " + user.getCPF() + " already exists.");
+            System.err.println("Usuário com CPF " + user.getCPF() + " já existente.");
             return false;
         }
         users.put(user.getCPF(), user);
-        System.out.println("User '" + user.getName() + "' registered successfully.");
+        System.out.println("Usuário '" + user.getName() + "' registrado com sucesso.");
         return true;
     }
 
@@ -122,19 +122,19 @@ public class Library {
         LibraryItem item = libraryItems.get(itemId);
 
         if (user == null) {
-            System.err.println("Borrow failed: User with CPF " + userCpf + " not found.");
+            System.err.println("Empréstimo falhou: usuário com CPF " + userCpf + " não encontrado.");
             return null;
         }
         if (item == null) {
-            System.err.println("Borrow failed: Item with ID " + itemId + " not found.");
+            System.err.println("Empréstimo falhou: item com ID " + itemId + " não encontrado.");
             return null;
         }
         if (!item.isAvailable()) {
-            System.err.println("Borrow failed: Item '" + item.getTitle() + "' is not available.");
+            System.err.println("Empréstimo falhou: item '" + item.getTitle() + "' não disponível.");
             return null;
         }
         if (user.isBlocked()) {
-            System.err.println("Borrow failed: User '" + user.getName() + "' is blocked due to pending penalties.");
+            System.err.println("Empréstimo falhou: usuário '" + user.getName() + "' está bloqueado devido multas.");
             return null;
         }
 
@@ -142,12 +142,12 @@ public class Library {
                 .filter(b -> b.getUser().getCPF().equals(userCpf) && b.getReturnDate() == null)
                 .count();
         if (currentUserBorrows >= user.getUserType().getMaxBorrows()) {
-            System.err.println("Borrow failed: User '" + user.getName() + "' has reached their maximum borrow limit (" + user.getUserType().getMaxBorrows() + ").");
+            System.err.println("Empréstimo falhou: usuário '" + user.getName() + "' já chegou no máximo de empréstimos (" + user.getUserType().getMaxBorrows() + ").");
             return null;
         }
 
         if (!(item instanceof Borrowable borrowableItem)) {
-            System.err.println("Borrow failed: Item '" + item.getTitle() + "' is not borrowable.");
+            System.err.println("Empréstimo falhou: Item '" + item.getTitle() + "' não é alugável.");
             return null;
         }
 
@@ -159,13 +159,12 @@ public class Library {
             activeBorrows.add(newBorrow);
             borrowHistory.add(newBorrow);
             user.addBorrowToHistory(newBorrow);
-            System.out.println("Borrow successful: '" + item.getTitle() + "' to '" + user.getName() + "'. Due: " + dueDate);
+            System.out.println("Empréstimo falhou: '" + item.getTitle() + "' para '" + user.getName() + "'. Vencido: " + dueDate);
             return newBorrow;
         }
         return null;
     }
 
-    // MODIFICAÇÃO AQUI: Adicionado 'actualReturnDate' como parâmetro
     public boolean returnBorrow(String borrowId, LocalDate actualReturnDate) {
         Borrow borrowToReturn = activeBorrows.stream()
                 .filter(b -> b.getBorrowId().equals(borrowId))
@@ -173,22 +172,21 @@ public class Library {
                 .orElse(null);
 
         if (borrowToReturn == null) {
-            System.err.println("Return failed: Active borrow with ID " + borrowId + " not found.");
+            System.err.println("Empréstimo falhou: Empréstimo ativo com ID " + borrowId + " não encontrado");
             return false;
         }
 
         if (borrowToReturn.getReturnDate() != null) {
-            System.err.println("Return failed: Borrow ID " + borrowId + " has already been returned.");
+            System.err.println("Empréstimo falhou: empréstimo ID " + borrowId + " já foi devolvido.");
             return false;
         }
 
         if (!(borrowToReturn.getItem() instanceof Borrowable borrowableItem)) {
-            System.err.println("Internal error: Borrowed item is not Borrowable.");
+            System.err.println("Erro interno: item alugável não é alugável (verificar).");
             return false;
         }
 
         if (borrowableItem.returnItem()) {
-            // USANDO O PARÂMETRO 'actualReturnDate' AQUI
             borrowToReturn.setReturnDate(actualReturnDate);
 
             double penaltyAmount = borrowToReturn.getUser().calculatePenalty(borrowToReturn);
@@ -196,12 +194,12 @@ public class Library {
                 Penalty newPenalty = new Penalty(borrowToReturn, penaltyAmount);
                 pendingPenalties.add(newPenalty);
                 borrowToReturn.getUser().setBlocked(true);
-                System.out.println("Penalty incurred for '" + borrowToReturn.getItem().getTitle() + "': $" + String.format("%.2f", penaltyAmount) + ". User " + borrowToReturn.getUser().getName() + " is now blocked.");
+                System.out.println("Multa incorrida por '" + borrowToReturn.getItem().getTitle() + "': $" + String.format("%.2f", penaltyAmount) + ". Usuário " + borrowToReturn.getUser().getName() + " foi bloqueado.");
             }
 
             activeBorrows.remove(borrowToReturn);
 
-            System.out.println("Borrow ID " + borrowId + " successfully returned and processed.");
+            System.out.println("Empréstimo ID " + borrowId + " retornado e processado com sucesso.");
             return true;
         }
         return false;
@@ -214,30 +212,30 @@ public class Library {
                 .orElse(null);
 
         if (borrowToRenew == null) {
-            System.err.println("Renew failed: Active borrow with ID " + borrowId + " not found.");
+            System.err.println("Renovação falhou: Empréstimo ativo com ID " + borrowId + " não encontrado.");
             return false;
         }
         if (borrowToRenew.getReturnDate() != null) {
-            System.err.println("Renew failed: Borrow ID " + borrowId + " has already been returned.");
+            System.err.println("Renovação falhou: Empréstimo com ID " + borrowId + " já foi retornado.");
             return false;
         }
         if (borrowToRenew.isRenewed()) {
-            System.err.println("Renew failed: Borrow ID " + borrowId + " has already been renewed.");
+            System.err.println("Renovação falhou: Empréstimo com ID " + borrowId + " já foi renovado.");
             return false;
         }
         if (LocalDate.now().isAfter(borrowToRenew.getDueDate())) {
-            System.err.println("Renew failed: Borrow ID " + borrowId + " is already overdue.");
+            System.err.println("Renovação falhou: Empréstimo com ID " + borrowId + " já está atrasado.");
             return false;
         }
 
         if (!(borrowToRenew.getItem() instanceof Borrowable borrowableItem)) {
-            System.err.println("Internal error: Item in borrow is not Borrowable.");
+            System.err.println("Erro interno: Item em empréstimo não é alugável.");
             return false;
         }
         int extensionDays = borrowableItem.getBorrowPeriodDays();
         borrowToRenew.setDueDate(borrowToRenew.getDueDate().plusDays(extensionDays));
         borrowToRenew.setRenewed(true);
-        System.out.println("Borrow ID " + borrowId + " renewed successfully. New due date: " + borrowToRenew.getDueDate());
+        System.out.println("Empréstimo ID " + borrowId + " renovado com sucesso. Nova data de vencimento: " + borrowToRenew.getDueDate());
         return true;
     }
 
@@ -252,7 +250,7 @@ public class Library {
                 .orElse(null);
 
         if (penaltyToPay == null) {
-            System.err.println("Penalty with ID " + penaltyId + " not found in pending penalties.");
+            System.err.println("Multa com ID " + penaltyId + " não identificada em multas pendentes.");
             return false;
         }
 
@@ -265,9 +263,9 @@ public class Library {
 
         if (!userStillHasPendingPenalties) {
             penaltyToPay.getBorrow().getUser().setBlocked(false);
-            System.out.println("User " + penaltyToPay.getBorrow().getUser().getName() + " unblocked.");
+            System.out.println("Usuário " + penaltyToPay.getBorrow().getUser().getName() + " desbloqueado.");
         }
-        System.out.println("Penalty ID " + penaltyId + " paid successfully. Amount: $" + String.format("%.2f", penaltyToPay.getAmount()));
+        System.out.println("Multa ID " + penaltyId + " paga com sucesso. Valor: R$" + String.format("%.2f", penaltyToPay.getAmount()));
         return true;
     }
 

@@ -3,24 +3,23 @@ package poo.system;
 import java.util.UUID; // For generating unique IDs
 
 public class Penalty {
-    private final String penaltyId; // Made final as it's set once in constructor
-    private final Borrow borrow;    // Made final as it's set once in constructor
-    private final double amount;    // Made final as it's set once in constructor
+    private final String penaltyId;
+    private final Borrow borrow;
+    private final double amount;
     private boolean isPaid;
 
-    // Constructor
     public Penalty(Borrow borrow, double amount) {
         if (borrow == null) {
-            throw new IllegalArgumentException("Penalty must be associated with a valid Borrow object.");
+            throw new IllegalArgumentException("Multa deve estar relacionada com um empréstimo válido.");
         }
         if (amount < 0) {
-            throw new IllegalArgumentException("Penalty amount cannot be negative.");
+            throw new IllegalArgumentException("Multa não pode ser de valor negativo.");
         }
 
-        this.penaltyId = UUID.randomUUID().toString(); // Generate a unique ID
+        this.penaltyId = UUID.randomUUID().toString(); // Gerando ID único
         this.borrow = borrow;
         this.amount = amount;
-        this.isPaid = false; // Not paid by default
+        this.isPaid = false; // Não paga por padrão
     }
 
     // Getters
@@ -40,19 +39,17 @@ public class Penalty {
         return isPaid;
     }
 
-    // Setter for isPaid (with validation where appropriate)
     public void setPaid(boolean paid) {
         isPaid = paid;
     }
 
-    // Overriding toString() method
     @Override
     public String toString() {
         return "Penalty{" +
                 "penaltyId='" + penaltyId + '\'' +
-                ", borrowId='" + borrow.getBorrowId() + '\'' + // Reference to the borrow ID
-                ", user='" + borrow.getUser().getName() + '\'' + // User who incurred penalty
-                ", item='" + borrow.getItem().getTitle() + '\'' + // Item associated with penalty
+                ", borrowId='" + borrow.getBorrowId() + '\'' +
+                ", user='" + borrow.getUser().getName() + '\'' +
+                ", item='" + borrow.getItem().getTitle() + '\'' +
                 ", amount=" + String.format("%.2f", amount) +
                 ", isPaid=" + isPaid +
                 '}';

@@ -1,4 +1,3 @@
-// poo/view/ItemPanel.java
 package poo.view;
 
 import poo.system.Library;
@@ -13,8 +12,8 @@ public class ItemPanel extends JPanel {
 
     private Library library;
     private JTextField titleField, authorDirectorEditorField, publicationYearField;
-    private JTextField specificIdField; // For ISBN or ISSN
-    private JTextField editionNumberField; // For Magazine only
+    private JTextField specificIdField; // Para ISBN ou ISSN
+    private JTextField editionNumberField; // Para revista apenas
     private JComboBox<String> itemTypeComboBox;
     private JLabel specificIdLabel, editionNumberLabel;
     private JButton addItemButton, refreshListButton;
@@ -23,9 +22,9 @@ public class ItemPanel extends JPanel {
 
     public ItemPanel(Library library) {
         this.library = library;
-        setLayout(new BorderLayout(10, 10)); // Layout principal do painel
+        setLayout(new BorderLayout(10, 10)); // Layout principal
 
-        // --- Painel de Entrada de Dados (Norte) ---
+        // --- Painel de Entrada de Dados ---
         JPanel inputPanel = new JPanel(new GridBagLayout());
         inputPanel.setBorder(BorderFactory.createTitledBorder("Adicionar Novo Item"));
         GridBagConstraints gbc = new GridBagConstraints();

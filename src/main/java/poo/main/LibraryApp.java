@@ -93,50 +93,41 @@ public class LibraryApp {
         System.out.println("\n--- Renovar empréstimos ---");
         Borrow borrow4 = library.performBorrow(professor.getCPF(), dvd2.getTitle() + "-" + dvd2.getAuthor() + "-" + dvd2.getPublicationYear());
         if (borrow4 != null) {
-            System.out.println("Borrow 4 initial due date: " + borrow4.getDueDate());
-            library.renewBorrow(borrow4.getBorrowId()); // Renew
-            System.out.println("Borrow 4 new due date: " + borrow4.getDueDate());
-            library.renewBorrow(borrow4.getBorrowId()); // Try to renew again (should fail based on current logic)
+            System.out.println("Data de vencimento inicial do empréstimo 4: " + borrow4.getDueDate());
+            library.renewBorrow(borrow4.getBorrowId()); // Renovação
+            System.out.println("Nova data de vencimento do empréstimo 4: " + borrow4.getDueDate());
+            library.renewBorrow(borrow4.getBorrowId()); // Tentar renovar novamente
         }
 
 
-        // 7. Generate Reports
-        System.out.println("\n--- Generating Reports ---");
-        System.out.println("\n--- All Items ---");
+        // 7. Gerar Relatórios
+        System.out.println("\n--- Gerando Relatórios ---");
+        System.out.println("\n--- Todos os Itens ---");
         library.listAllItems().forEach(System.out::println);
 
-        System.out.println("\n--- Items by Category (Books) ---");
+        System.out.println("\n--- Itens por categoria (Livros) ---");
         library.listItemsByCategory("Book").forEach(System.out::println);
 
-        System.out.println("\n--- Most Borrowed Items (Top 2) ---");
+        System.out.println("\n--- Itens mais alugados (Top 2) ---");
         library.getMostBorrowedItems(2).forEach(System.out::println);
 
-        System.out.println("\n--- Users with Most Borrows (Top 2) ---");
+        System.out.println("\n--- Usuários com mais empréstimos (Top 2) ---");
         library.getUsersWithMostBorrows(2).forEach(System.out::println);
 
-        System.out.println("\n--- Overdue Items ---");
-        // To show an overdue item, we need one that is NOT returned yet but is past its due date.
-        // We cannot directly manipulate borrowDate for items created via performBorrow using LocalDate.now().
-        // So, we will simply list any existing active borrows whose due dates have passed *relative to now*.
-        // The previous attempt to manually set overdueBorrow.setDueDate(LocalDate.now().minusDays(3)) caused the error
-        // because its borrowDate was LocalDate.now() and you cannot set dueDate before borrowDate.
-        // We remove the problematic manual dueDate setting for the overdue test here.
-        Book overdueTestBook = new Book("Temp Overdue Test Book", "Test Author", 2024, "978-9-999-99999-9");
+        System.out.println("\n--- Itens em Atraso ---");
+
+        Book overdueTestBook = new Book("Livro Teste", "Autor Teste", 2024, "978-9-999-99999-9");
         library.addItem(overdueTestBook);
         Borrow tempOverdueBorrow = library.performBorrow(employee.getCPF(), overdueTestBook.getISBN());
         if (tempOverdueBorrow != null) {
-            // For testing purposes, manually set its due date to be in the past IF this were a real scenario
-            // where time had passed. For immediate test, this will not show unless you adjust system clock
-            // or modify performBorrow to allow past borrowDates.
-            // We won't set it to a past date to avoid the IllegalArgumentException.
-            System.out.println("Temp overdue borrow due date is: " + tempOverdueBorrow.getDueDate() + " (will only appear in report if system date passes it).");
+            System.out.println("A data de vencimento do empréstimo em atraso é: " + tempOverdueBorrow.getDueDate());
         }
         library.getOverdueItems().forEach(System.out::println);
 
 
-        System.out.println("\n--- Total Penalty Revenue ---");
-        System.out.println("Total Revenue: $" + String.format("%.2f", library.getTotalPenaltyRevenue()));
+        System.out.println("\n--- Receita Total de Penalidades ---");
+        System.out.println("Penalidade Total: R$" + String.format("%.2f", library.getTotalPenaltyRevenue()));
 
-        System.out.println("\n--- End of Library System Test ---");
+        System.out.println("\n--- Fim do Teste ---");
     }
 }
